@@ -3,11 +3,15 @@ package main
 import "fmt"
 
 func main() {
-	wordlistPath := "./wordlist.txt"
-	words, err := LoadWordlist(wordlistPath)
+	words, err := LoadWordlist("wordlist.txt")
 	if err != nil {
-		panic(err)
+		fmt.Println("Error loading wordlist:", err)
+		return
 	}
 
-	fmt.Println(words)
+	resolver := NewResolver("8.8.8.8")
+
+	subdomainEnum := NewSubdomainEnumerator("example.com", words, resolver, 50)
+
+	subdomainEnum.Start()
 }

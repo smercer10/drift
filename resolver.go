@@ -24,7 +24,7 @@ func NewResolver(nameserver string) *Resolver {
 	resolver := &net.Resolver{
 		PreferGo: true,
 		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-			return dialer.DialContext(ctx, network, nameserver)
+			return dialer.DialContext(ctx, network, fmt.Sprintf("%s:53", nameserver))
 		},
 	}
 
