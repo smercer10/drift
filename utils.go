@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// LoadWordlist reads a file containing a line-separated list of potential subdomains.
 func LoadWordlist(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -13,18 +14,18 @@ func LoadWordlist(path string) ([]string, error) {
 	}
 	defer file.Close()
 
-	var words []string
+	var subdomains []string
 	scanner := bufio.NewScanner(file)
+
+	// Preallocate slice to reduce reallocations.
+	subdomains = make([]string, 0, 1000)
+
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
-		if line != "" {
-			words = append(words, line)
+		if line != "" && !strings.HasPrefix(line, "#") {
+			subdomains = append(subdomains, line)
 		}
 	}
 
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
-
-	return words, nil
+	return subdomains, scanner.Err()
 }
